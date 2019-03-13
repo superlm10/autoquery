@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lm.mybatisplus.autoquery.MybatisplusAutoqueryApplicationTests;
 import com.lm.mybatisplus.autoquery.demo.entity.Student;
 import com.lm.mybatisplus.autoquery.demo.service.StudentService;
+import com.lm.mybatisplus.autoquery.demo.vo.StudentVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +40,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         queryWrapper.eq("stu_age", 20);
         queryWrapper.eq("class_id", 1);
 
-        List<Student> students = studentService.autoQuery(queryWrapper);
+        List<StudentVo> students = studentService.autoQuery(queryWrapper);
         System.out.println(students);
     }
 
@@ -56,7 +57,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         Page<Student> studentPage = new Page<>(1, 1);
 
 
-        List<Student> students = studentService.autoQuery(studentPage, queryWrapper);
+        List<StudentVo> students = studentService.autoQuery(studentPage, queryWrapper);
         System.out.println(students);
 
     }

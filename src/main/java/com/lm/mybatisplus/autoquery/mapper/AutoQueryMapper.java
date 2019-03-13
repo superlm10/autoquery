@@ -10,14 +10,15 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 学生Mapper层
- * @author nieqiurong 2018/8/11 20:21.
+ * @author LM
+ * @description:
+ * @date 2019/3/12 15:50
  */
 @Mapper
-public interface AutoQueryMapper<T> extends BaseMapper<T> {
+public interface AutoQueryMapper<T,S> {
 
-    List<T> autoQuery(@Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
+    List<S> autoQuery(@Param(Constants.WRAPPER) QueryWrapper<S> wrapper);
 
-    List<T> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
+    List<S> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<S> wrapper);
 
 }
