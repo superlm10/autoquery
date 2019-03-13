@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2019/3/12 15:50
  */
 @Mapper
-public interface StudentMapper extends BaseMapper<Student>, AutoQueryMapper<Student, StudentVo> {
+public interface StudentMapper extends BaseMapper<Student>, AutoQueryMapper<Student> {
 
 
 }

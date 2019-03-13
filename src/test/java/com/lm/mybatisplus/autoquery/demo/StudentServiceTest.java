@@ -16,8 +16,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 示例：
- * 该种情况是在Entity对应的实体中添加查询的外键表字段（如不想使用该种做法, 见{@link StudentVoServiceTest}）
  * 支持的功能为：
  * 1.自动多表关联查询
  * 2.可指定主表外键名以及外键表连接字段
@@ -40,7 +38,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         queryWrapper.eq("stu_age", 20);
         queryWrapper.eq("class_id", 1);
 
-        List<StudentVo> students = studentService.autoQuery(queryWrapper);
+        List<Student> students = studentService.autoQuery(queryWrapper);
         System.out.println(students);
     }
 
@@ -57,7 +55,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         Page<Student> studentPage = new Page<>(1, 1);
 
 
-        List<StudentVo> students = studentService.autoQuery(studentPage, queryWrapper);
+        List<Student> students = studentService.autoQuery(studentPage, queryWrapper);
         System.out.println(students);
 
     }

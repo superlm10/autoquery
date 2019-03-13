@@ -14,14 +14,14 @@ import java.util.List;
  * @description:
  * @date 2019/3/12 19:29
  */
-public interface AutoQueryService<T, S extends T> {
+public interface AutoQueryService<T> {
 
     /**
      * 自动查询服务(不分页)
      * @param wrapper
      * @return
      */
-    default List<S> autoQuery(QueryWrapper<T> wrapper) {
+    default List<T> autoQuery(QueryWrapper<T> wrapper) {
         AutoQueryMapper autoQueryMapper = (AutoQueryMapper)SpringContextUtils.getBean("autoQueryMapper");
         MyReflectionUtil.reflectionWrapper(wrapper);
         return autoQueryMapper.autoQuery(wrapper);
@@ -33,7 +33,7 @@ public interface AutoQueryService<T, S extends T> {
      * @param wrapper
      * @return
      */
-    default List<S> autoQuery(IPage<T> page, QueryWrapper<T> wrapper) {
+    default List<T> autoQuery(IPage<T> page, QueryWrapper<T> wrapper) {
         AutoQueryMapper autoQueryMapper = (AutoQueryMapper)SpringContextUtils.getBean("autoQueryMapper");
         MyReflectionUtil.reflectionWrapper(wrapper);
         return autoQueryMapper.autoQuery(page, wrapper);

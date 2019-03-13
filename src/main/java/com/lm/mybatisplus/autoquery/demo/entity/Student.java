@@ -12,11 +12,20 @@ import lombok.Data;
  * @date 2019/3/12 15:51
  */
 @Data
+@TableName("student")
 public class Student {
 
     private Long id;
 
     private String stuName;
+
+    @AutoQuery(autoColumn = "class_name", foreignJoinColumn = "class_name", foreignKey = "class_name", foreignTable = "school_class", extraColumns = {"school_id"})
+    @TableField(exist = false)
+    private String className;
+
+    @AutoQuery(autoColumn = "school_name", foreignKey = "school_id", foreignTable = "school", joinType = AutoJoinType.JOIN_TYPE)
+    @TableField(exist = false)
+    private String schoolName;
 
 
     private Long schoolId;

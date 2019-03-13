@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.lm.mybatisplus.autoquery.annotations.AutoQuery;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryBuilder;
+import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryHelper;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryMeta;
 import com.lm.mybatisplus.autoquery.sqlhelper.MySqlMethod;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -103,5 +104,6 @@ public class AutoQueryMethod extends AbstractMethod {
 
         return autoQueryMetas;
     }
+
 
 }

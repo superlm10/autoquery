@@ -22,15 +22,15 @@ import static org.junit.Assert.*;
 public class AutoQueryMapperTest extends MybatisplusAutoqueryApplicationTests {
 
     @Autowired
-    private AutoQueryMapper<StudentVo, StudentVo> autoQueryMapper;
+    private AutoQueryMapper<Student> autoQueryMapper;
 
     @Test
     public void test() {
-        QueryWrapper<StudentVo> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("stu_age", 20);
         queryWrapper.eq("class_id", 1);
 
-        List<StudentVo> list = autoQueryMapper.autoQuery(queryWrapper);
+        List<Student> list = autoQueryMapper.autoQuery(queryWrapper);
         System.out.println(list);
 
     }

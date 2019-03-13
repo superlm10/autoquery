@@ -10,6 +10,6 @@ import com.lm.mybatisplus.autoquery.service.AutoQueryService;
  * @description:
  * @date 2019/3/12 15:49
  */
-public interface StudentService extends IService<Student>, AutoQueryService<Student, StudentVo> {
+public interface StudentService extends IService<Student>, AutoQueryService<Student> {
 
 }

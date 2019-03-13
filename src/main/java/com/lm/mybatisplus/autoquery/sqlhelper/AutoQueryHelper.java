@@ -1,6 +1,9 @@
 package com.lm.mybatisplus.autoquery.sqlhelper;
 
+import com.lm.mybatisplus.autoquery.demo.vo.StudentVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.reflection.Reflector;
+import org.apache.ibatis.reflection.ReflectorFactory;
 
 import java.util.List;
 
@@ -131,25 +134,29 @@ public class AutoQueryHelper {
     }
 
     /**
-     * 原始的列名中添加额外查询的列
-     * @param oriSelectColumn (不带有前缀的列名)
-     * @return
+     * 替换Entity为Vo
+     * @param oriTable (原始表类)
+     * @return Vo类
      */
-    public static String addExtraColumns(String oriSelectColumn, String[] extraColumns) {
+    public static Class<?> getTableVoClass(Class<?> oriTable) {
 
-        if (extraColumns == null && extraColumns.length == 0) {
-            return oriSelectColumn;
+        StringBuilder builder = new StringBuilder();
+
+        String oriTableName = oriTable.getName();
+        //先替换为空串, 这样可以适应类似(Student)这样不带Entity的实体
+        String replaceTableName = oriTableName.replace("Entity", "");
+        builder.append(replaceTableName);
+        builder.append("Vo");
+        String voTableName = builder.toString();
+
+        Class<?> voTable = null;
+        try {
+            voTable = Class.forName(voTableName);
+        } catch (ClassNotFoundException e) {
+            log.error("没有对应的Vo实体类，msg: {}", voTableName);
         }
 
-        StringBuilder extraBuilder = new StringBuilder();
-        extraBuilder.append(oriSelectColumn);
-
-        for (int i = 0; i < extraColumns.length; i++) {
-            extraBuilder.append(",");
-            extraBuilder.append(extraColumns[0]);
-        }
-
-        return extraBuilder.toString();
+        return voTable;
     }
 
 }
