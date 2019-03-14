@@ -2,6 +2,7 @@ package com.lm.mybatisplus.autoquery.injector;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.extension.injector.LogicSqlInjector;
 import com.lm.mybatisplus.autoquery.methods.AutoQueryMethod;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @date 2019/3/12 15:38
  */
 @Component
-public class MySqlInjector extends DefaultSqlInjector {
+public class MySqlInjector extends LogicSqlInjector {
 
     @Override
     public List<AbstractMethod> getMethodList() {

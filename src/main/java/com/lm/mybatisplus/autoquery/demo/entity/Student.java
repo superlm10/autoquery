@@ -1,6 +1,7 @@
 package com.lm.mybatisplus.autoquery.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lm.mybatisplus.autoquery.annotations.AutoQuery;
 import com.lm.mybatisplus.autoquery.constant.AutoJoinType;
@@ -33,5 +34,8 @@ public class Student {
     private String schoolName;
 
     private Integer stuAge;
+
+    @TableLogic
+    private Integer deleted;
 
 }

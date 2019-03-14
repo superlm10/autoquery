@@ -9,6 +9,7 @@ CREATE TABLE student
   school_id    BIGINT (20) NOT NULL COMMENT '学校ID',
   class_name VARCHAR(30) NULL DEFAULT NULL COMMENT '课程名',
   stu_age     INT (11) NULL DEFAULT NULL COMMENT '年龄',
+  deleted INT (11) NULL DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (id)
 );
 
@@ -18,6 +19,7 @@ CREATE TABLE school_class
   id      BIGINT (20) NOT NULL COMMENT '主键ID',
   class_name    VARCHAR(30) NULL DEFAULT NULL COMMENT '课程名',
   school_id    BIGINT (20) NOT NULL COMMENT '学校ID',
+  deleted INT (11) NULL DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (id)
 );
 
@@ -26,5 +28,6 @@ CREATE TABLE school
 (
   id      BIGINT (20) NOT NULL COMMENT '主键ID',
   school_name    VARCHAR(30) NULL DEFAULT NULL COMMENT '学校名',
+  deleted INT (11) NULL DEFAULT NULL COMMENT '软删除',
   PRIMARY KEY (id)
 );

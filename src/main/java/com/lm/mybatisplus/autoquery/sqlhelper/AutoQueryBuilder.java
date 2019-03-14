@@ -44,6 +44,8 @@ public class AutoQueryBuilder {
         }
 
         String buildAfterFromSql = buildAfterFromSql(mainTableName);
+
+        //最后两个字符占位为where语句, 以及逻辑删除
         return String.format(sql, buildSelectColumn, buildAfterFromSql, "%s");
 
     }

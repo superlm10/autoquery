@@ -2,6 +2,7 @@ package com.lm.mybatisplus.autoquery.utils;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryHelper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,7 @@ public class MyReflectionUtil {
      */
     public static void reflectionWrapper(QueryWrapper queryWrapper) {
 
-        String whereAndConstant = " AND ";
+        String theAndConstant = " AND ";
 
         try {
             //变魔术,调用这个方法之后wrapper才会初始化SQl
@@ -36,11 +37,18 @@ public class MyReflectionUtil {
             expressionField.setAccessible(true);
             String expressionTemplate = (String)expressionField.get(expression);
 
-            //逐个遍历, 加入列名前缀
-            String[] partSqlList = expressionTemplate.split(whereAndConstant);
+            //分割列
+            String[] partSqlList = expressionTemplate.split(theAndConstant);
+
+            //对每个列名拼接前缀
             String completeWhereSql = Arrays.stream(partSqlList).map(partsql -> {
+
+                if (partsql.contains(".") || !StringUtils.isEmpty(partsql)) {
+                    return partsql;
+                }
+
                 return AutoQueryHelper.MAIN_TABLE_PRE + partsql;
-            }).collect(Collectors.joining(whereAndConstant));
+            }).collect(Collectors.joining(theAndConstant));
 
             expressionField.set(expression, completeWhereSql);
         } catch(Exception e) {

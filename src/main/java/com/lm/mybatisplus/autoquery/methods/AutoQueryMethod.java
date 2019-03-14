@@ -2,8 +2,11 @@ package com.lm.mybatisplus.autoquery.methods;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
+import com.baomidou.mybatisplus.extension.injector.AbstractLogicMethod;
 import com.lm.mybatisplus.autoquery.annotations.AutoQuery;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryBuilder;
+import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryHelper;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryMeta;
 import com.lm.mybatisplus.autoquery.sqlhelper.MySqlMethod;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -49,7 +52,7 @@ public class AutoQueryMethod extends AbstractMethod {
         AutoQueryBuilder autoQueryBuilder = new AutoQueryBuilder(autoQueryMetas);
         String completeSqlNotWhere = autoQueryBuilder.buildCompleteSql(oriSelectColumn, mainTableName);
 
-        String completeSql = getCompleteSql(completeSqlNotWhere, tableInfo);
+        String completeSql = getCompleteSql(completeSqlNotWhere, tableInfo, autoQueryBuilder);
         String method = MySqlMethod.AUTO_QUERY.getMethod();
 
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, completeSql, modelClass);
@@ -63,8 +66,10 @@ public class AutoQueryMethod extends AbstractMethod {
      * @param tableInfo
      * @return
      */
-    private String getCompleteSql(String completeSqlNotWhere, TableInfo tableInfo) {
-        return String.format(completeSqlNotWhere, sqlWhereEntityWrapper(true, tableInfo));
+    private String getCompleteSql(String completeSqlNotWhere, TableInfo tableInfo, AutoQueryBuilder autoQueryBuilder) {
+
+        String whereEntityWrapper = mySqlWhereEntityWrapper(true, tableInfo, autoQueryBuilder);
+        return String.format(completeSqlNotWhere, whereEntityWrapper);
     }
 
 
@@ -102,6 +107,43 @@ public class AutoQueryMethod extends AbstractMethod {
 
 
         return autoQueryMetas;
+    }
+
+
+    /**
+     * 重写拼接逻辑删除的方法, 主要适用与拼接多表的逻辑删除字段
+     * @param newLine
+     * @param table
+     * @return
+     */
+    protected String mySqlWhereEntityWrapper(boolean newLine, TableInfo table, AutoQueryBuilder autoQueryBuilder) {
+        if (table.isLogicDelete()) {
+            String sqlScript = table.getAllSqlWhere(true, true, WRAPPER_ENTITY_DOT);
+            sqlScript = SqlScriptUtils.convertIf(sqlScript, String.format("%s != null", WRAPPER_ENTITY),
+                    true);
+
+            //修改拼接logic语句的行为
+            String logicDeleteSql = table.getLogicDeleteSql(true, false);
+            List<AutoQueryMeta> autoQueryMetaList = autoQueryBuilder.getAutoQueryMetaList();
+            logicDeleteSql = AutoQueryHelper.getLogicDeletedSql(autoQueryMetaList, logicDeleteSql);
+
+            sqlScript += (NEWLINE + logicDeleteSql + NEWLINE);
+            String normalSqlScript = SqlScriptUtils.convertIf(String.format("AND ${%s}", WRAPPER_SQLSEGMENT),
+                    String.format("%s != null and %s != '' and %s", WRAPPER_SQLSEGMENT, WRAPPER_SQLSEGMENT,
+                            WRAPPER_NONEMPTYOFNORMAL), true);
+            normalSqlScript += NEWLINE;
+            normalSqlScript += SqlScriptUtils.convertIf(String.format(" ${%s}", WRAPPER_SQLSEGMENT),
+                    String.format("%s != null and %s != '' and %s", WRAPPER_SQLSEGMENT, WRAPPER_SQLSEGMENT,
+                            WRAPPER_EMPTYOFNORMAL), true);
+            sqlScript += normalSqlScript;
+            //这条语句观察了一下，我们Wrapper不可能为空
+            sqlScript = SqlScriptUtils.convertChoose(String.format("%s != null", WRAPPER), sqlScript,
+                    table.getLogicDeleteSql(false, false));
+            sqlScript = SqlScriptUtils.convertWhere(sqlScript);
+            return newLine ? NEWLINE + sqlScript : sqlScript;
+        }
+        // 正常逻辑
+        return super.sqlWhereEntityWrapper(newLine, table);
     }
 
 }

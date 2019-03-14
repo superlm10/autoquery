@@ -8,7 +8,7 @@ package com.lm.mybatisplus.autoquery.sqlhelper;
 public enum MySqlMethod {
 
     /**
-     * 自动查询
+     * 自动查询, 四个字符占位符分别对应，select列，连接表语句, where语句, 逻辑删除
      */
     AUTO_QUERY("autoQuery", "自动查询", "<script>select %s from %s %s</script>"),
     ;

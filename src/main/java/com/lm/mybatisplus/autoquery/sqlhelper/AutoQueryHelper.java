@@ -1,5 +1,6 @@
 package com.lm.mybatisplus.autoquery.sqlhelper;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -91,6 +92,44 @@ public class AutoQueryHelper {
         return joinBuilder.toString();
 
     }
+
+    /**
+     * 逻辑删除字段拼接到SQL语句中
+     * @param autoQueryMetaList 主要用于拼接外键表的deleted语句
+     * @param logicSentence 逻辑删除语句 %s=%s 形式
+     * @return
+     */
+    public static String getLogicDeletedSql(List<AutoQueryMeta> autoQueryMetaList, String logicSentence) {
+
+        //原本框架的Logic是 `AND %s = %s`的形式, 只需要改变`%s = %s`这一串就行了, AND保留
+
+        StringBuilder logicBuilder = new StringBuilder();
+
+        String[] partLogicSentence = logicSentence.split("AND ");
+        String logicExpression = partLogicSentence[1];
+        String[] partLogicSentenceNotAnd = logicExpression.split("=");
+
+
+        String logicColumn = partLogicSentenceNotAnd[0];
+        String logicValue = partLogicSentenceNotAnd[1];
+
+        //拼接主键逻辑删除
+        String formatLogicSql = "AND %sDELETED = %s ";
+        String logicSqlWithMain = String.format(formatLogicSql, MAIN_TABLE_PRE, logicValue);
+        logicBuilder.append(logicSqlWithMain);
+
+        int size = autoQueryMetaList.size();
+
+        //拼接外键表的deleted语句
+        for (int metaIndex = 0; metaIndex < size; metaIndex++) {
+
+            String relPreWithAnd = String.format(formatLogicSql, String.format(FORIGN_TABLE_PRE, metaIndex), logicValue);
+            logicBuilder.append(relPreWithAnd);
+        }
+
+        return logicBuilder.toString();
+    }
+
 
     /**
      * 搜索条件加入外键查询字段
