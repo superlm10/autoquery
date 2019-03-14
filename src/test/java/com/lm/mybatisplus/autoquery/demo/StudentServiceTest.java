@@ -38,6 +38,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("stu_age", 20);
         queryWrapper.eq("class_id", 1);
+        queryWrapper.eq("rel0.id", 1);
 
         List<Student> students = studentService.autoQuery(queryWrapper);
         System.out.println(students);

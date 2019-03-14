@@ -43,7 +43,7 @@ public class MyReflectionUtil {
             //对每个列名拼接前缀
             String completeWhereSql = Arrays.stream(partSqlList).map(partsql -> {
 
-                if (partsql.contains(".") || !StringUtils.isEmpty(partsql)) {
+                if (StringUtils.isEmpty(partsql) || partsql.split("=")[0].contains(".")) {
                     return partsql;
                 }
 
