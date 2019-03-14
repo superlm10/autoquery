@@ -14,7 +14,7 @@ import java.util.List;
  * @description:
  * @date 2019/3/12 15:38
  */
-public abstract class AutoQueryServiceImpl<M extends AutoQueryMapper<T>,T> extends ServiceImpl<M, T> implements AutoQueryService<T> {
+public abstract class AutoQueryServiceImpl<M extends AutoQueryMapper<T, V>,T, V> extends ServiceImpl<M, T> implements AutoQueryService<T, V> {
 
     /**
      * 自动查询服务(不分页)
@@ -22,7 +22,7 @@ public abstract class AutoQueryServiceImpl<M extends AutoQueryMapper<T>,T> exten
      * @return
      */
     @Override
-    public List<T> autoQuery(QueryWrapper<T> wrapper) {
+    public List<V> autoQuery(QueryWrapper<T> wrapper) {
         MyReflectionUtil.reflectionWrapper(wrapper);
         return baseMapper.autoQuery(wrapper);
     }
@@ -34,7 +34,7 @@ public abstract class AutoQueryServiceImpl<M extends AutoQueryMapper<T>,T> exten
      * @return
      */
     @Override
-    public List<T> autoQuery(IPage<T> page, QueryWrapper<T> wrapper) {
+    public List<V> autoQuery(IPage<T> page, QueryWrapper<T> wrapper) {
         MyReflectionUtil.reflectionWrapper(wrapper);
         return baseMapper.autoQuery(page, wrapper);
     }

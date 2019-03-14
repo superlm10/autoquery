@@ -57,15 +57,32 @@ public class AutoQueryBuilder {
      */
     public String buildSelectColumn(String oriSelectColumn) {
 
+        StringBuilder oriSelectBuilder = new StringBuilder();
+
         String buildSelectColumn = null;
         int size = autoQueryMetaList.size();
+
+        String oriSelectColumnWithForign = oriSelectColumn;
+        oriSelectBuilder.append(oriSelectColumnWithForign);
+
+        for (int metaIndex = 0; metaIndex < size; metaIndex++) {
+            AutoQueryMeta autoQueryMeta = autoQueryMetaList.get(metaIndex);
+            String autoColumn = autoQueryMeta.getAutoColumn();
+            String[] extraColumns = autoQueryMeta.getExtraColumns();
+        }
+
         for (int metaIndex = 0; metaIndex < size; metaIndex++) {
             AutoQueryMeta autoQueryMeta = autoQueryMetaList.get(metaIndex);
             String autoColumn = autoQueryMeta.getAutoColumn();
             String[] extraColumns = autoQueryMeta.getExtraColumns();
 
             //添加额外查询列，以及外键查询列
-            buildSelectColumn = AutoQueryHelper.buildSelectColumn(oriSelectColumn, autoColumn, extraColumns, metaIndex);
+            if (metaIndex == 0) {
+                buildSelectColumn = AutoQueryHelper.buildSelectColumn(oriSelectColumn, autoColumn, extraColumns, metaIndex, true);
+            } else {
+                buildSelectColumn = AutoQueryHelper.buildSelectColumn(oriSelectColumn, autoColumn, extraColumns, metaIndex, false);
+            }
+            oriSelectColumn = buildSelectColumn;
         }
         return buildSelectColumn;
     }

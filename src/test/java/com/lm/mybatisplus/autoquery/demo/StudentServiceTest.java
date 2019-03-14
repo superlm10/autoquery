@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lm.mybatisplus.autoquery.MybatisplusAutoqueryApplicationTests;
 import com.lm.mybatisplus.autoquery.demo.entity.Student;
 import com.lm.mybatisplus.autoquery.demo.service.StudentService;
+import com.lm.mybatisplus.autoquery.demo.vo.StudentVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,7 @@ import java.util.List;
 
 /**
  * 示例：
- * 该种情况是在Entity对应的实体中添加查询的外键表字段（如不想使用该种做法, 见{@link StudentVoServiceTest}）
+ * 该种情况是在Entity对应的实体中添加查询的外键表字段（如不想使用该种做法）
  * 支持的功能为：
  * 1.自动多表关联查询
  * 2.可指定主表外键名以及外键表连接字段
@@ -40,7 +41,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         queryWrapper.eq("class_id", 1);
         queryWrapper.eq("rel0.id", 1);
 
-        List<Student> students = studentService.autoQuery(queryWrapper);
+        List<StudentVo> students = studentService.autoQuery(queryWrapper);
         System.out.println(students);
     }
 
@@ -57,7 +58,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         Page<Student> studentPage = new Page<>(1, 1);
 
 
-        List<Student> students = studentService.autoQuery(studentPage, queryWrapper);
+        List<StudentVo> students = studentService.autoQuery(studentPage, queryWrapper);
         System.out.println(students);
 
     }

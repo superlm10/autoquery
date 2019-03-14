@@ -39,11 +39,31 @@ public class AutoQueryHelper {
      * @param relColumn
      * @param extraColumns 额外查询列
      * @param joinIndex 如果是多个表连接, 需要通过该字段判断, 赋予列名不同的别名
+     * @param isAddPre
      * @return
      */
-    public static String buildSelectColumn(String selectColumn, String relColumn, String[] extraColumns, int joinIndex) {
-        String preSelectColumn = getPreSelectColumn(selectColumn);
+    public static String buildSelectColumn(String selectColumn, String relColumn, String[] extraColumns, int joinIndex, boolean isAddPre) {
+
+        String preSelectColumn = selectColumn;
+        if (isAddPre) {
+            preSelectColumn = getPreSelectColumn(selectColumn);
+        }
+
         String buildSelectColumn = addRelColumn(relColumn, preSelectColumn, joinIndex);
+
+        buildSelectColumn = buildExtraSelectColumn(buildSelectColumn, extraColumns, joinIndex);
+
+        return buildSelectColumn;
+    }
+
+    /**
+     * SELECT语句添加额外查询字段
+     * @param buildSelectColumn
+     * @param extraColumns
+     * @param joinIndex
+     * @return
+     */
+    public static String buildExtraSelectColumn(String buildSelectColumn, String[] extraColumns, int joinIndex) {
 
         for (int i = 0; i < extraColumns.length; i++) {
             //添加额外查询字段

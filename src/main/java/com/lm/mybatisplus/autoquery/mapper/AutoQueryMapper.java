@@ -14,10 +14,10 @@ import java.util.List;
  * @author nieqiurong 2018/8/11 20:21.
  */
 @Mapper
-public interface AutoQueryMapper<T> extends BaseMapper<T> {
+public interface AutoQueryMapper<T, V> extends BaseMapper<T> {
 
-    List<T> autoQuery(@Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
+    List<V> autoQuery(@Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
 
-    List<T> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
+    List<V> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
 
 }

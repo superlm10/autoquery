@@ -2,6 +2,7 @@ package com.lm.mybatisplus.autoquery.methods;
 
 import com.baomidou.mybatisplus.core.injector.AbstractMethod;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import com.baomidou.mybatisplus.core.toolkit.sql.SqlScriptUtils;
 import com.baomidou.mybatisplus.extension.injector.AbstractLogicMethod;
 import com.lm.mybatisplus.autoquery.annotations.AutoQuery;
@@ -12,7 +13,7 @@ import com.lm.mybatisplus.autoquery.sqlhelper.MySqlMethod;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
