@@ -25,7 +25,7 @@ public interface AutoQueryService<T, V> extends IService<T> {
      * @param wrapper
      * @return
      */
-    List<V> autoQuery(IPage<T> page, QueryWrapper<T> wrapper);
+    IPage<V> autoQuery(IPage<T> page, QueryWrapper<T> wrapper);
 
 
 }

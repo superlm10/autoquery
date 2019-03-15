@@ -10,12 +10,14 @@ import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryBuilder;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryHelper;
 import com.lm.mybatisplus.autoquery.sqlhelper.AutoQueryMeta;
 import com.lm.mybatisplus.autoquery.sqlhelper.MySqlMethod;
+import com.lm.mybatisplus.autoquery.utils.ConvertUtil;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,11 +46,11 @@ public class AutoQueryMethod extends AbstractMethod {
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
 
-        List<AutoQuery> autoQueries = findFieldWithAutoQuery(modelClass);
-        List<AutoQueryMeta> autoQueryMetas = analysisAutoQuery(autoQueries);
+        Map<String, AutoQuery> autoQueryMap = findFieldWithAutoQuery(modelClass);
+        List<AutoQueryMeta> autoQueryMetas = analysisAutoQuery(autoQueryMap);
 
-        String oriSelectColumn = sqlSelectColumns(tableInfo, false);
-        String mainTableName = tableInfo.getTableName();
+        String oriSelectColumn = mySqlSelectColumns(tableInfo, autoQueryMetas);
+        String mainTableName = replaceTableName(tableInfo.getTableName());
 
         AutoQueryBuilder autoQueryBuilder = new AutoQueryBuilder(autoQueryMetas);
         String completeSqlNotWhere = autoQueryBuilder.buildCompleteSql(oriSelectColumn, mainTableName);
@@ -58,6 +60,22 @@ public class AutoQueryMethod extends AbstractMethod {
 
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, completeSql, modelClass);
         return this.addSelectMappedStatement(mapperClass, method, sqlSource, modelClass, tableInfo);
+    }
+
+    /**
+     * 替换表名为Vo类，规则为 如果有Entity，将Entity替换为Vo, 如果没有, 则在后面拼接Vo
+     * @param tableName
+     * @return
+     */
+    private String replaceTableName(String tableName) {
+
+        String theReplaceTable = tableName;
+        if (tableName.contains("Vo") || tableName.contains("VO")) {
+            theReplaceTable = tableName.replace("_Vo", "");
+            theReplaceTable = theReplaceTable.replace("_VO", "");
+        }
+
+        return theReplaceTable;
     }
 
 
@@ -79,33 +97,39 @@ public class AutoQueryMethod extends AbstractMethod {
      * @param modelClass
      * @return
      */
-    private List<AutoQuery> findFieldWithAutoQuery(Class<?> modelClass) {
+    private Map<String, AutoQuery> findFieldWithAutoQuery(Class<?> modelClass) {
         Field[] fields = modelClass.getDeclaredFields();
 
-        List<AutoQuery> autoQueryList = new ArrayList<>();
+        Map<String, AutoQuery> autoQueryMap = new HashMap<>();
 
         for (Field field :fields) {
             AutoQuery[] autoQueries = field.getAnnotationsByType(AutoQuery.class);
             if (autoQueries != null && autoQueries.length > 0) {
-                autoQueryList.add(autoQueries[0]);
+                String fieldName = field.getName();
+                autoQueryMap.put(fieldName, autoQueries[0]);
             }
         }
 
-        return autoQueryList;
+        return autoQueryMap;
     }
 
 
     /**
      * 注解分析为AutoQuery元数据
-     * @param autoQueryList
+     * @param autoQueryMap
      * @return
      */
-    public List<AutoQueryMeta> analysisAutoQuery(List<AutoQuery> autoQueryList) {
+    public List<AutoQueryMeta> analysisAutoQuery(Map<String, AutoQuery> autoQueryMap) {
 
-        List<AutoQueryMeta> autoQueryMetas = autoQueryList.stream().map(autoQuery -> {
-            return new AutoQueryMeta(autoQuery.autoColumn(), autoQuery.foreignJoinColumn(), autoQuery.foreignKey(), autoQuery.foreignTable(), autoQuery.joinType(), autoQuery.extraColumns());
-        }).collect(Collectors.toList());
+        List<AutoQueryMeta> autoQueryMetas = new ArrayList<>();
 
+        for (Map.Entry<String, AutoQuery> cut: autoQueryMap.entrySet()) {
+            String explanColumn = cut.getKey();
+            AutoQuery autoQuery = cut.getValue();
+            AutoQueryMeta autoQueryMeta = new AutoQueryMeta(autoQuery.autoColumn(), autoQuery.foreignJoinColumn(), autoQuery.foreignKey(), autoQuery.foreignTable(), autoQuery.joinType(), autoQuery.extraColumns());
+            autoQueryMeta.setExplanColumn(explanColumn);
+            autoQueryMetas.add(autoQueryMeta);
+        }
 
         return autoQueryMetas;
     }
@@ -145,6 +169,34 @@ public class AutoQueryMethod extends AbstractMethod {
         }
         // 正常逻辑
         return super.sqlWhereEntityWrapper(newLine, table);
+    }
+
+    /**
+     * <p>
+     * SQL 查询所有表字段
+     * </p>
+     *
+     * @param table        表信息
+     * @return sql 脚本
+     */
+    protected String mySqlSelectColumns(TableInfo table, List<AutoQueryMeta> autoQueryMetas) {
+        /* 假设存在 resultMap 映射返回 */
+        String selectColumns = ASTERISK;
+        if (table.getResultMap() == null) {
+            /* 普通查询 */
+            selectColumns = table.getAllSqlSelect();
+        }
+
+        //去除掉外键字段
+        for (AutoQueryMeta autoQueryMeta: autoQueryMetas) {
+            String explanColumn = autoQueryMeta.getExplanColumn();
+            String underExplanColumn = ",".concat(ConvertUtil.underScoreName(explanColumn));
+            if (!StringUtils.isEmpty(selectColumns)) {
+                selectColumns = selectColumns.replace(underExplanColumn, "");
+            }
+        }
+
+        return selectColumns;
     }
 
 }

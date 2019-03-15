@@ -18,6 +18,6 @@ public interface AutoQueryMapper<T, V> extends BaseMapper<T> {
 
     List<V> autoQuery(@Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
 
-    List<V> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
+    IPage<V> autoQuery(IPage<T> page, @Param(Constants.WRAPPER) QueryWrapper<T> wrapper);
 
 }

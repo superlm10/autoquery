@@ -16,14 +16,13 @@ import lombok.ToString;
  */
 @Data
 @ToString(callSuper = true)
-@TableName("student")
 public class StudentVo extends Student {
 
     @AutoQuery(autoColumn = "class_name", foreignJoinColumn = "class_name", foreignKey = "class_name", foreignTable = "school_class", extraColumns = {"school_id"})
-    @TableField(exist = false)
+    //@TableField(exist = false)
     private String className;
 
-    @AutoQuery(autoColumn = "school_name", foreignKey = "school_id", foreignTable = "school", joinType = AutoJoinType.JOIN_TYPE)
+    //@AutoQuery(autoColumn = "school_name", foreignKey = "school_id", foreignTable = "school", joinType = AutoJoinType.JOIN_TYPE)
     @TableField(exist = false)
     private String schoolName;
 

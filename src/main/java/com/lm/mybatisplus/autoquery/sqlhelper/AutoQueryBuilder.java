@@ -1,5 +1,7 @@
 package com.lm.mybatisplus.autoquery.sqlhelper;
 
+import com.lm.mybatisplus.autoquery.enums.AutoExceptionEnum;
+import com.lm.mybatisplus.autoquery.exception.AutoQueryCheckException;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -39,8 +41,8 @@ public class AutoQueryBuilder {
         String buildSelectColumn = buildSelectColumn(oriSelectColumn);
 
         if (StringUtils.isEmpty(buildSelectColumn)) {
-            //说明该实体没有AutoQuery注解, 然而还进行调用了autoQuery方法, 直接返回null
-            log.error("实体类{}上无AutoQuery注解, 请检查", mainTableName);
+            //说明该实体没有AutoQuery注解, 然而还进行调用了autoQuery方法
+            throw new AutoQueryCheckException(AutoExceptionEnum.AUTO_QUERY_NOT);
         }
 
         String buildAfterFromSql = buildAfterFromSql(mainTableName);
@@ -64,12 +66,6 @@ public class AutoQueryBuilder {
 
         String oriSelectColumnWithForign = oriSelectColumn;
         oriSelectBuilder.append(oriSelectColumnWithForign);
-
-        for (int metaIndex = 0; metaIndex < size; metaIndex++) {
-            AutoQueryMeta autoQueryMeta = autoQueryMetaList.get(metaIndex);
-            String autoColumn = autoQueryMeta.getAutoColumn();
-            String[] extraColumns = autoQueryMeta.getExtraColumns();
-        }
 
         for (int metaIndex = 0; metaIndex < size; metaIndex++) {
             AutoQueryMeta autoQueryMeta = autoQueryMetaList.get(metaIndex);

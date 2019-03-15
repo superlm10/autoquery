@@ -1,6 +1,7 @@
 package com.lm.mybatisplus.autoquery.demo;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lm.mybatisplus.autoquery.MybatisplusAutoqueryApplicationTests;
 import com.lm.mybatisplus.autoquery.demo.entity.Student;
@@ -58,7 +59,7 @@ public class StudentServiceTest extends MybatisplusAutoqueryApplicationTests {
         Page<Student> studentPage = new Page<>(1, 1);
 
 
-        List<StudentVo> students = studentService.autoQuery(studentPage, queryWrapper);
+        IPage<StudentVo> students = studentService.autoQuery(studentPage, queryWrapper);
         System.out.println(students);
 
     }

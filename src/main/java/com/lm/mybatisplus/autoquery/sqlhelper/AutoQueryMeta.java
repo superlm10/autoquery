@@ -10,6 +10,11 @@ import lombok.Data;
 @Data
 public class AutoQueryMeta {
 
+    /**
+     * auto-query注解打在实体上的列名
+     */
+    private String explanColumn;
+
     private String autoColumn;
 
     private String relationColumn;
@@ -32,12 +37,4 @@ public class AutoQueryMeta {
         this.extraColumns = extraColumns;
     }
 
-    /**
-     * 获取拼接模版
-     * @return
-     */
-    private String getCondition() {
-
-        return null;
-    }
 }
